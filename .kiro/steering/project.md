@@ -2,7 +2,7 @@
 
 ## Sobre o Desenvolvedor
 
-- Desenvolvedor sênior Delphi em transição para desenvolvimento WEB.
+- Desenvolvedor sênior Delphi com entusiasmo em aprender desenvolvimento WEB.
 - Está aprendendo os fundamentos de aplicações WEB na prática.
 - Futuramente fará um TCC usando HTML, CSS, React, Next.js, PostgreSQL e Vercel.
 - O objetivo deste projeto é entender o ciclo completo de uma aplicação WEB antes de usar frameworks.
@@ -35,9 +35,7 @@ expenses-control/
 ├── index.js            # Lógica da tela de login
 ├── global.css          # Estilos globais compartilhados por todas as telas
 ├── firebase-init.js    # Inicialização do Firebase (compartilhado)
-├── validations.js      # Funções de validação reutilizáveis
 ├── usable.js           # Funções utilitárias reutilizáveis
-├── loading.js          # Componente de loading overlay
 ├── home/
 │   └── home.html       # Tela principal após login
 └── register/

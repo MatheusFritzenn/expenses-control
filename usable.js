@@ -30,7 +30,7 @@ function validateEmail(email) {
 }
 
 function formatDate(date){
-    return new Date(date).toLocaleDateString('pt-br');
+    return new Date(date.replace(/-/g, '/')).toLocaleDateString('pt-br');
 }
 
 function formatMoney(money){

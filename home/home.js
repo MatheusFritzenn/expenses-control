@@ -1,24 +1,28 @@
-function logout() {
-    showLoading();
-    firebase.auth()
-        .signOut()
-        .then(() => {
-            hideLoading();
-            window.location.href = "../index.html";
-        })
-        .catch(error => {
-            hideLoading();
-            alert("Erro ao fazer logout)");
-        })
-}
+firebase.auth().onAuthStateChanged(user => {
+    if (!user) {
+        window.location.href = "../index.html";
+    } else {
+        findTransactions(user);
+    }
+})
 
-function findTransactions() {
+function findTransactions(user) {
+    showLoading();
     firebase.firestore()
-        .collection("transactions")
+        .collection("transactions") 
+        .where("user.uid", "==", user.uid)
+        .orderBy("date", "desc")
         .get()
         .then(snapshot => {
+            console.log("sucesso");
+            hideLoading();
             const transactions = snapshot.docs.map(doc => doc.data());
             addTransactionsToScreen(transactions);
+        })
+        .catch(error => {
+            console.log(error)
+            hideLoading();
+            alert("Erro ao consultar transações!")
         })
 }
 
@@ -51,20 +55,20 @@ function addTransactionsToScreen(transactions) {
     });
 }
 
-function createTransaction(type, date, currency, value, cathegory, description) {
-    return {
-        type: type,
-        date: date,
-        money: { currency: currency, value: value },
-        cathegory: cathegory,
-        description: description
-    };
+function logout() {
+    showLoading();
+    firebase.auth()
+        .signOut()
+        .then(() => {
+            hideLoading();
+            window.location.href = "../index.html";
+        })
+        .catch(error => {
+            hideLoading();
+            alert("Erro ao fazer logout)");
+        })
 }
 
-const fakeTransactions = [
-    createTransaction('expense', '2026-01-01', 'R$', 10, 'Supermercado'),
-    createTransaction('income', '2026-01-02', 'USD', 100, 'Salário', 'Senior Sistemas')
-];
 
-findTransactions();
+
 
