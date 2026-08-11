@@ -13,34 +13,44 @@
 **Objetivo:** Aplicação web para controle de despesas pessoais.  
 **Stack atual:** HTML, CSS e JavaScript puro (vanilla JS), sem frameworks.  
 **Autenticação:** Firebase Authentication (SDK compat versão 12.16.0).  
-**Banco de dados / Backend:** Firestore (a ser integrado).  
+**Banco de dados / Backend:** Firestore (já integrado).  
 **Hospedagem:** A definir (Vercel planejado para o TCC).
 
 ### Roadmap planejado
-1. Telas e lógica em HTML/CSS/JS puro — fase atual.
-2. Integração com Firestore para persistência de dados.
-3. Criação de uma camada de serviço para abstrair o acesso ao backend.
+1. ✅ Telas e lógica em HTML/CSS/JS puro.
+2. ✅ Integração com Firestore para persistência de dados.
+3. ✅ Criação de uma camada de serviço para abstrair o acesso ao backend.
 4. Criação de uma API REST para conectar frontend e backend.
 
 ---
 
 ## Estrutura de Pastas
 
-Cada tela tem sua própria pasta com um `.html` e um `.js` dedicado.  
-Arquivos compartilhados ficam na raiz do projeto.
+Cada tela tem sua própria pasta dentro de `pages/`, com um `.html`, um `.js` e, quando necessário, um `.css` dedicado.  
+Arquivos compartilhados ficam na raiz do projeto.  
+Serviços de acesso ao Firestore ficam na pasta `services/`.
 
 ```
 expenses-control/
-├── index.html          # Tela de login
-├── index.js            # Lógica da tela de login
-├── global.css          # Estilos globais compartilhados por todas as telas
-├── firebase-init.js    # Inicialização do Firebase (compartilhado)
-├── usable.js           # Funções utilitárias reutilizáveis
-├── home/
-│   └── home.html       # Tela principal após login
-└── register/
-    ├── register.html   # Tela de cadastro
-    └── register.js     # Lógica da tela de cadastro
+├── index.html                          # Tela de login
+├── index.js                            # Lógica da tela de login
+├── global.css                          # Estilos globais compartilhados por todas as telas
+├── firebase-init.js                    # Inicialização do Firebase (compartilhado)
+├── usable.js                           # Funções utilitárias, validações, loading e logout
+├── services/
+│   └── transaction.services.js         # Camada de serviço para transações (Firestore)
+└── pages/
+    ├── home/
+    │   ├── home.html                   # Tela principal após login
+    │   ├── home.js                     # Lógica da tela principal
+    │   └── home.css                    # Estilos específicos da tela principal
+    ├── register/
+    │   ├── register.html               # Tela de cadastro
+    │   └── register.js                 # Lógica da tela de cadastro
+    └── transaction/
+        ├── transaction.html            # Tela de inserção/edição de transação
+        ├── transaction.js              # Lógica da tela de transação
+        └── transaction.css             # Estilos específicos da tela de transação
 ```
 
 ---
@@ -62,16 +72,20 @@ expenses-control/
 ### Botões
 Existem três variantes de botão. Use sempre uma dessas classes:
 
-| Classe     | Aparência                              | Uso típico                    |
-|------------|----------------------------------------|-------------------------------|
-| `.solid`   | Fundo branco, sem borda, texto escuro  | Ação principal (ex: Entrar)   |
-| `.outline` | Fundo transparente, borda branca       | Ação secundária (ex: Registrar) |
-| `.clear`   | Fundo transparente, sem borda          | Ação terciária (ex: Recuperar senha, Voltar) |
+| Classe     | Aparência                              | Uso típico                          |
+|------------|----------------------------------------|-------------------------------------|
+| `.solid`   | Fundo branco, sem borda, texto escuro  | Ação principal (ex: Salvar)         |
+| `.outline` | Fundo transparente, borda branca       | Ação secundária (ex: Registrar)     |
+| `.clear`   | Fundo transparente, sem borda          | Ação terciária (ex: Cancelar, Sair) |
 
 Regras gerais de botão:
 - `padding: 10px`, `width: -webkit-fill-available`, `cursor: pointer`, `margin-bottom: 10px`.
 - Botão desabilitado: `opacity: 0.6`.
 - Botão ao clicar (`:active`): `opacity: 0.7`.
+
+#### Botão FAB
+- Classe `.fab` combinada com `.fixed .bottom .right`: botão flutuante fixo no canto inferior direito.
+- Usado na home para abrir a tela de inserção de transação.
 
 ### Inputs
 - `padding: 10px`, `width: -webkit-fill-available`.
@@ -85,12 +99,13 @@ Regras gerais de botão:
 - Padrão de IDs: `[campo]-required-error`, `[campo]-invalid-error`, `[campo]-min-length-error`, etc.
 
 ### Formulários
-- Formulários centralizados na tela: `<body class="centralize">`.
+- Formulários centralizados na tela: `<body class="centralize">` ou `<main class="centralize">`.
 - Largura do formulário: `width: 400px`.
 - Classe `.centralize`: `display: flex; justify-content: center; align-items: center;`.
+- Telas com header usam `body { display: flex; flex-direction: column; }` e `main` como container centralizado.
 
 ### Loading
-- Overlay global via `showLoading()` e `hideLoading()` (funções em `loading.js`).
+- Overlay global via `showLoading()` e `hideLoading()` (funções em `usable.js`).
 - Sempre chamar `showLoading()` antes de operações assíncronas e `hideLoading()` no `.then()` e no `.catch()`.
 
 ---
@@ -108,9 +123,36 @@ const form = {
 }
 ```
 
+### usable.js — Funções disponíveis
+O arquivo `usable.js` centraliza todas as funções utilitárias compartilhadas:
+
+| Função                  | Descrição                                              |
+|-------------------------|--------------------------------------------------------|
+| `getErrorMessage(error)`| Traduz códigos de erro do Firebase para mensagens PT   |
+| `showLoading()`         | Exibe o overlay de carregamento                        |
+| `hideLoading()`         | Remove o overlay de carregamento                       |
+| `validateEmail(email)`  | Valida formato de e-mail via regex                     |
+| `formatDate(date)`      | Formata data para `pt-br` (ex: `01/01/2025`)           |
+| `formatMoney(money)`    | Formata objeto `{ currency, value }` (ex: `BRL 99.90`) |
+| `logout()`              | Faz signOut no Firebase e redireciona para `index.html`|
+
+> Não existem arquivos `loading.js` ou `validations.js` separados — tudo está em `usable.js`.
+
+### Camada de serviço — services/
+Funções de acesso ao Firestore ficam em arquivos de serviço dentro da pasta `services/`.
+
+**`transaction.services.js`** — objeto `transactionService`:
+
+| Método                      | Descrição                                              |
+|-----------------------------|--------------------------------------------------------|
+| `findByUser(user)`          | Busca transações do usuário, ordenadas por data desc   |
+| `findByUid(uid)`            | Busca uma transação pelo ID do documento               |
+| `save(transaction)`         | Insere nova transação                                  |
+| `update(uid, transaction)`  | Atualiza transação existente                           |
+| `remove(transaction)`       | Remove transação pelo `uid`                            |
+
 ### Validações
-- Funções de validação reutilizáveis ficam em `validations.js` (ex: `validateEmail()`).
-- Funções utilitárias reutilizáveis ficam em `usable.js` (ex: `getErrorMessage()`).
+- Funções de validação reutilizáveis ficam em `usable.js` (ex: `validateEmail()`).
 
 ### Eventos de blur
 - Validações de campo são disparadas no evento `onblur` do input.
@@ -129,24 +171,26 @@ const form = {
 
 ## Inclusão de Scripts no HTML
 
-- O `<link rel="stylesheet">` para o `global.css` é incluído antes dos scripts.
+- O `<link rel="stylesheet">` para o `global.css` é incluído antes dos scripts (ao final do `<body>`).
+- CSS específico da tela é incluído logo após o `global.css`.
 - Scripts são incluídos no final do HTML, fora do `<body>`, na seguinte ordem:
   1. SDKs externos (Firebase compat)
   2. `firebase-init.js`
-  3. Script da tela (ex: `index.js`, `register.js`)
-  4. Scripts utilitários (`validations.js`, `usable.js`, `loading.js`)
-- Para telas em subpastas, os caminhos usam `../` para chegar à raiz.
+  3. `usable.js`
+  4. Scripts de serviço (ex: `transaction.services.js`)
+  5. Script da tela (ex: `index.js`, `home.js`, `transaction.js`)
+- Para telas em subpastas (`pages/[tela]/`), os caminhos usam `../../` para chegar à raiz.
 
 ---
 
 ## Firebase
 
 - **Versão SDK:** compat 12.16.0 (carregado via CDN do gstatic).
-- **Módulos em uso:** `firebase-app-compat.js`, `firebase-auth-compat.js`.
-- **A adicionar futuramente:** `firebase-firestore-compat.js`.
+- **Módulos em uso:** `firebase-app-compat.js`, `firebase-auth-compat.js`, `firebase-firestore-compat.js`.
 - A inicialização do Firebase está em `firebase-init.js` na raiz — nunca duplicar a configuração.
 - Usar sempre `firebase.auth()` para operações de autenticação.
-- Usar sempre `firebase.firestore()` para operações de banco de dados (quando integrado).
+- Usar sempre `firebase.firestore()` para operações de banco de dados.
+- Coleção de transações: `"transactions"`. Cada documento contém: `type`, `date`, `money: { currency, value }`, `cathegory`, `description`, `user: { uid }`.
 
 ---
 
@@ -154,8 +198,9 @@ const form = {
 
 1. Toda tela nova deve seguir a paleta de cores, padrões de botões, inputs e erros definidos no `global.css`.
 2. Nunca criar estilos inline que contradigam o `global.css`.
-3. Nunca duplicar lógica que já existe em `validations.js`, `usable.js` ou `loading.js`.
+3. Nunca duplicar lógica que já existe em `usable.js` ou nos arquivos de serviço em `services/`.
 4. Manter o código em português (labels, mensagens de erro, comentários).
-5. Cada tela nova ganha sua própria pasta com `[tela].html` e `[tela].js`.
+5. Cada tela nova ganha sua própria pasta em `pages/[tela]/` com `[tela].html`, `[tela].js` e `[tela].css` quando necessário.
 6. Ao criar novos campos de formulário, seguir o padrão de IDs: `[campo]-[tipo]-error`.
 7. Firebase já está inicializado globalmente via `firebase-init.js` — não reinicializar.
+8. Novas operações de banco de dados devem ser adicionadas ao serviço correspondente em `services/`, nunca diretamente no `.js` da tela.

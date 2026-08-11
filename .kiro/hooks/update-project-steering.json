@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Atualizar project.md ao salvar arquivos do projeto",
+      "trigger": "PostFileSave",
+      "matcher": "\\.(html|js|css)$",
+      "action": {
+        "type": "agent",
+        "prompt": "Um arquivo do projeto foi salvo. Verifique se a mudança é estruturalmente relevante para o steering file `.kiro/steering/project.md`. São consideradas mudanças relevantes:\n- Criação de nova tela (novo .html, .js ou .css em `pages/`)\n- Adição de novo arquivo de serviço em `services/`\n- Adição ou remoção de funções em `usable.js`\n- Mudanças na ordem ou lista de scripts incluídos nos HTMLs\n- Mudanças na estrutura de pastas do projeto\n- Adição de novos padrões de componentes (botões, inputs, etc.) no `global.css`\n- Avanço no roadmap (ex: nova integração concluída)\n\nSe a mudança for relevante, atualize o `project.md` para refletir o estado atual do projeto. Se não for relevante, não faça nada."
+      }
+    }
+  ]
+}
