@@ -1,7 +1,7 @@
 let currentUser = null;
 firebase.auth().onAuthStateChanged(user => {
     if (!user) {
-        window.location.href = "../index.html";
+        window.location.href = "../../index.html";
     } else {
         currentUser = user;
     }
@@ -24,14 +24,11 @@ function isNewTransaction() {
 function findTransactionByUid(uid) {
     showLoading();
 
-    firebase.firestore()
-        .collection("transactions")
-        .doc(uid)
-        .get()
-        .then(doc => {
+    transactionService.findByUid(uid)
+        .then(transaction => {
             hideLoading();
-            if (doc.exists) {
-                fillTransactionString(doc.data());
+            if (transaction) {
+                fillTransactionString(transaction);
                 toggleSaveButtonDisable();
             } else {
                 alert("Documento não encontrado.")
@@ -87,12 +84,10 @@ function saveTransaction() {
 function insert(transaction) {
     showLoading();
 
-    firebase
-    .firestore()
-    .collection("transactions")
-    .add(transaction)
+    transactionService.save(transaction)
     .then(() => {
         hideLoading();
+        alert("Transação inserida com sucesso!");
         goBackToHomePage();
     })
     .catch((error) => {
@@ -103,14 +98,10 @@ function insert(transaction) {
 
 function update(transaction) {
     showLoading();
-
-    firebase
-    .firestore()
-    .collection("transactions")
-    .doc(getTransactionUid())
-    .update(transaction)
+    transactionService.update(getTransactionUid(), transaction)
     .then(() => {
         hideLoading();
+        alert("Transação alterada com sucesso!");
         goBackToHomePage();
     })
     .catch((error) => {

@@ -4,12 +4,10 @@
     }
 })*/
 
-//Chamado no clique do botão de login
 function goToLoginPage() {
-    window.location.href = "../index.html";
+    window.location.href = "../../index.html";
 }
 
-//Chamado ao sair do campo de email
 function onBlurEmail() {
     const email  = form.email().value;
 
@@ -18,7 +16,6 @@ function onBlurEmail() {
     toggleRegisterButtonDisable();
 }
 
-//Chamado ao sair do campo de senha
 function onBlurSenha() {
     const senha  = form.password().value;
 
@@ -27,7 +24,6 @@ function onBlurSenha() {
     toggleRegisterButtonDisable();
 }
 
-//Chamado ao sair do campo de confirmar senha
 function onBlurConfirmarSenha() {
     const senha = form.password().value;
     const confirmarSenha = form.confirmPassword().value;
@@ -36,12 +32,10 @@ function onBlurConfirmarSenha() {
     toggleRegisterButtonDisable();
 }
 
-//Função que habilita/desabilita o botão de registrar
 function toggleRegisterButtonDisable() {
     form.registerButton().disabled = !isFormValid()
 }
 
-//Função que verifica se todos os campos estão válidos
 function isFormValid(){
     const email = form.email().value;
     const password = form.password().value;
@@ -60,7 +54,6 @@ function isFormValid(){
     return true;
 }
 
-//Chamado no clique do botão registrar
 function register() {
     showLoading();
 

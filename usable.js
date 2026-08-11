@@ -43,7 +43,7 @@ function logout() {
         .signOut()
         .then(() => {
             hideLoading();
-            window.location.href = "../index.html";
+            window.location.href = "../../index.html";
         })
         .catch(error => {
             hideLoading();

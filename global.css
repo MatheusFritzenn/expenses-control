@@ -15,6 +15,10 @@ header {
 header button {
     width: auto;
 }
+button{
+    cursor: pointer;
+    margin-bottom: 10px;
+}
 button:active {
     opacity: 0.7;
 }
@@ -43,7 +47,6 @@ button.fab.bottom {
 button.fab.right {
     right: 32px;
 }
-
 .clear {
     background: transparent;
     border: none;
@@ -78,10 +81,7 @@ button.fab.right {
 .form-field {
     margin-bottom: 10px;
 }
-
-button{
-    cursor: pointer;
-    margin-bottom: 10px;
-}
-
-
+.outline.danger {
+    color: red;
+    border-color: red;
+} 

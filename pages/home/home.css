@@ -20,7 +20,15 @@ p {
 ol li.expense {
     border-left: 10px solid red;
 }
-.income {
+ol li.income {
     border-left: 10px solid green;
+}
+button.danger {
+    width: auto;
+    float: right;
+    display: none;
+}
+ol li:hover button.danger {
+    display: block;
 }
 

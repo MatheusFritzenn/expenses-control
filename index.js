@@ -1,6 +1,6 @@
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-        window.location.href = "home/home.html";
+        window.location.href = "pages/home/home.html";
     }
 })
 
@@ -50,7 +50,7 @@ function login() {
         form.email().value, form.password().value
     ).then(response => {
         hideLoading();
-        window.location.href = "home/home.html";  
+        window.location.href = "pages/home/home.html";  
     }).catch(error => {
         hideLoading();
         alert(getErrorMessage(error));
@@ -58,7 +58,7 @@ function login() {
 }
 
 function register() {
-    window.location.href = "register/register.html";
+    window.location.href = "pages/register/register.html";
 }
 
 function togglePasswordErrors() {
