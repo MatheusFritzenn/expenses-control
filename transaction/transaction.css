@@ -1,0 +1,16 @@
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 100vh;
+    height: auto;
+}
+input[type="radio"] {
+    width: auto;
+}

@@ -1,0 +1,81 @@
+<!doctype html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Transação - Controle de gastos</title>
+</head>
+
+<body> 
+    <header>
+        <button type="button" class="clear" onclick="logout()">Sair</button>
+    </header>
+
+    <main class="centralize">
+        <form>
+            <div class="form-field">
+                <div><label>Transação *</label></div>
+                <input type="radio" name="transactionType" id="expense" checked> 
+                <label for="expense">Despesa</label>
+                <input type="radio" name="transactionType" id="income"> 
+                <label for="income">Receita</label>
+            </div>
+            <div class="form-field">
+                <div><label>Data</label></div>
+                <input type="date" id="date" onBlur="onBlurDate()">
+                <div class="error" id="date-invalid-error">Data inválida</div>
+            </div>
+            <div class="form-field">
+                <div><label>Moeda *</label></div>
+                <select id="currency">
+                    <option selected>BRL</option>
+                    <option>USD</option>
+                    <option>EUR</option>
+                </select>            
+            </div>
+            <div class="form-field">
+                <div><label>Valor *</label></div>
+                <input type="number" id="value" onBlur="onBlurValue()">
+                <div class="error" id="value-required-error">Valor é obrigatório</div>
+                <div class="error" id="value-invalid-error">Informe um valor maior que 0</div>
+            </div>
+            <div class="form-field">
+                <div><label>Categoria *</label></div>
+                <select onBlur="onBlurCathegory()" id="cathegory">
+                    <option value="">Selecione uma categoria</option>
+                    <option>Salário</option>
+                    <option>Supermercado</option>
+                    <option>Carro</option>
+                    <option>Lazer</option>
+                    <option>Roupas</option>
+                    <option>Assinaturas</option>
+                    <option>Outros</option>
+                </select>
+                <div class="error" id="cathegory-required-error">Informe uma categoria</div>            
+            </div>
+            <div class="form-field">
+                <div><label>Descrição</label></div>
+                <input type="text" id="description">
+            </div>
+            <button type="button" class="solid" id="save-button" onclick="saveTransaction()" disabled>
+                Salvar
+            </button>
+            <button type="button" class="clear" id="cancel-button" onclick="goBackToHomePage()">
+                Cancelar
+            </button>
+        </form>
+    </main>    
+</body>  
+
+<link rel="stylesheet" href="../global.css" />
+<link rel="stylesheet" href="transaction.css" />
+
+<script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-app-compat.js"> </script>
+<script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-auth-compat.js"> </script>
+<script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore-compat.js"> </script>
+<script src="../firebase-init.js"> </script>
+<script src="../usable.js"> </script>
+<script src="transaction.js"> </script>
+
+</html>

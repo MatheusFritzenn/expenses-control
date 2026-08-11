@@ -36,3 +36,17 @@ function formatDate(date){
 function formatMoney(money){
     return money.currency + " " + money.value.toFixed(2);
 }
+
+function logout() {
+    showLoading();
+    firebase.auth()
+        .signOut()
+        .then(() => {
+            hideLoading();
+            window.location.href = "../index.html";
+        })
+        .catch(error => {
+            hideLoading();
+            alert("Erro ao fazer logout)");
+        })
+}

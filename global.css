@@ -1,5 +1,19 @@
+form {
+    width: 300px;
+}
 body {
     margin: 0;
+    background: rgb(0, 199, 146);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+header {
+    text-align: right;
+}
+header button {
+    width: auto;
 }
 button:active {
     opacity: 0.7;
@@ -7,6 +21,29 @@ button:active {
 button[disabled] {
     opacity: 0.6;
 }
+input, button, select {
+    padding: 5px;
+    width: -webkit-fill-available;
+}
+button.fab {
+    width: 54px;
+    height: 54px;
+    border-radius: 50px;
+    border: none;
+    font-size: 24px;
+    box-shadow: 2px 2px 2px gray; 
+    
+}
+button.fab.fixed {
+    position: fixed;
+}
+button.fab.bottom {
+    bottom: 32px;
+}
+button.fab.right {
+    right: 32px;
+}
+
 .clear {
     background: transparent;
     border: none;
@@ -41,43 +78,10 @@ button[disabled] {
 .form-field {
     margin-bottom: 10px;
 }
-input, button {
-    padding: 10px;
-    width: -webkit-fill-available;
-}
-form {
-    width: 400px;
-}
-body {
-    background: rgb(0, 199, 146);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+
 button{
     cursor: pointer;
     margin-bottom: 10px;
 }
 
-button.fab {
-    width: 54px;
-    height: 54px;
-    border-radius: 50px;
-    border: none;
-    font-size: 24px;
-    box-shadow: 2px 2px 2px gray; 
-    
-}
 
-button.fab.fixed {
-    position: fixed;
-}
-
-button.fab.bottom {
-    bottom: 32px;
-}
-
-button.fab.right {
-    right: 32px;
-}

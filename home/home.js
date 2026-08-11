@@ -14,15 +14,18 @@ function findTransactions(user) {
         .orderBy("date", "desc")
         .get()
         .then(snapshot => {
-            console.log("sucesso");
             hideLoading();
-            const transactions = snapshot.docs.map(doc => doc.data());
+            const transactions = snapshot.docs.map(doc => {
+                return {
+                    ...doc.data(),
+                    uid: doc.id
+                };
+            });
             addTransactionsToScreen(transactions);
         })
         .catch(error => {
             console.log(error)
             hideLoading();
-            alert("Erro ao consultar transações!")
         })
 }
 
@@ -32,6 +35,9 @@ function addTransactionsToScreen(transactions) {
     transactions.forEach(transaction => {
         const listItem = document.createElement("li");
         listItem.classList.add(transaction.type);
+        listItem.addEventListener("click", () => {
+            window.location.href = "../transaction/transaction.html?uid=" + transaction.uid;
+        })
 
         const date = document.createElement("p");
         date.innerHTML = formatDate(transaction.date);
@@ -55,20 +61,6 @@ function addTransactionsToScreen(transactions) {
     });
 }
 
-function logout() {
-    showLoading();
-    firebase.auth()
-        .signOut()
-        .then(() => {
-            hideLoading();
-            window.location.href = "../index.html";
-        })
-        .catch(error => {
-            hideLoading();
-            alert("Erro ao fazer logout)");
-        })
+function openTransactionInsertPage() {
+    window.location.href = "../transaction/transaction.html";    
 }
-
-
-
-
